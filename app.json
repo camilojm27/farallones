@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "react-native-laravel-api-tailwindcss",
-    "slug": "react-native-laravel-api-tailwindcss",
+    "name": "farallones",
+    "slug": "farallones",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "scheme": "react-native-laravel-api-tailwindcss",
+    "scheme": "farallones",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",

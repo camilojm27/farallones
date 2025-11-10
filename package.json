@@ -1,5 +1,5 @@
 {
-  "name": "react-native-laravel-api-tailwindcss",
+  "name": "farallones",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
@@ -31,5 +31,5 @@
     "typescript": "~5.9.2"
   },
   "private": true,
-  "packageManager": "yarn@4.9.2"
+  "packageManager": "yarn@4.11.0"
 }

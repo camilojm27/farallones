@@ -89,7 +89,7 @@ export default function Login() {
         style={styles.container}
       >
         <View style={styles.header}>
-          <Ionicons name="lock-closed-outline" size={50} color="#334155" />
+          <Ionicons name="lock-closed-outline" size={50} color="#6B4C9A" />
           <Text style={styles.title}>Welcome Back!</Text>
           <Text style={styles.subtitle}>Sign in to your account</Text>
         </View>
@@ -200,12 +200,12 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   forgotPasswordText: {
-    color: "#0EA5E9",
+    color: "#6B4C9A",
     fontSize: 14,
     fontWeight: "500",
   },
   button: {
-    backgroundColor: "#0EA5E9",
+    backgroundColor: "#6B4C9A",
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: "center",
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   buttonDisabled: {
-    backgroundColor: "#67BEE8",
+    backgroundColor: "#9B8BBF",
   },
   buttonText: {
     color: "#fff",
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   registerLink: {
-    color: "#0EA5E9",
+    color: "#6B4C9A",
     fontSize: 14,
     fontWeight: "bold",
     marginLeft: 4,

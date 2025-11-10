@@ -20,7 +20,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 const RegisterSchema = z
   .object({
-    name: z.string().min(1, "Full name is required."),
+    first_name: z.string().min(1, "First name is required."),
+    last_name: z.string().min(1, "Last name is required."),
     email: z.string().email("Please enter a valid email address."),
     password: z.string().min(8, "Password must be at least 8 characters long."),
     password_confirmation: z.string(),
@@ -74,7 +75,7 @@ export default function Register() {
         style={styles.container}
       >
         <View style={styles.header}>
-          <Ionicons name="person-add-outline" size={50} color="#334155" />
+          <Ionicons name="person-add-outline" size={50} color="#6B4C9A" />
           <Text style={styles.title}>Create Account</Text>
           <Text style={styles.subtitle}>Start your journey with us</Text>
         </View>
@@ -87,14 +88,27 @@ export default function Register() {
 
         <Controller
           control={control}
-          name="name"
+          name="first_name"
           render={({ field: { onChange, onBlur, value } }) => (
             <FormTextField
-              label="Full Name"
+              label="First Name"
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
-              errors={errors.name ? [errors.name.message!] : []}
+              errors={errors.first_name ? [errors.first_name.message!] : []}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="last_name"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <FormTextField
+              label="Last Name"
+              value={value}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              errors={errors.last_name ? [errors.last_name.message!] : []}
             />
           )}
         />
@@ -206,7 +220,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   button: {
-    backgroundColor: "#0EA5E9",
+    backgroundColor: "#6B4C9A",
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: "center",
@@ -215,7 +229,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   buttonDisabled: {
-    backgroundColor: "#67BEE8",
+    backgroundColor: "#9B8BBF",
   },
   buttonText: {
     color: "#fff",
@@ -232,7 +246,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   loginLink: {
-    color: "#0EA5E9",
+    color: "#6B4C9A",
     fontSize: 14,
     fontWeight: "bold",
     marginLeft: 4,
