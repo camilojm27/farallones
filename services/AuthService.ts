@@ -64,6 +64,11 @@ export async function register(info: any) {
   await setToken(data.token);
 }
 
+export async function updateUser(user: any) {
+  const { data } = await axios.put("/user", user);
+  return data;
+}
+
 export async function sendPasswordResetLink(email: string) {
   const { data } = await axios.post("/forgot-password", { email });
   return data.status;

@@ -44,6 +44,7 @@ export default function Layout() {
     <AuthContext.Provider value={{ user, setUser }}>
       <Stack initialRouteName="login">
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="communities" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="register" options={{ headerShown: false }} />
         <Stack.Screen name="forgot-password" options={{ headerShown: false }} />

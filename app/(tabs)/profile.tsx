@@ -11,9 +11,8 @@ import {
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { logout, loadUser } from "../../services/AuthService";
+import { logout, loadUser, updateUser } from "../../services/AuthService";
 import { router } from "expo-router";
-import axios from "../../utils/axios";
 import { Ionicons } from "@expo/vector-icons";
 
 const Settings = () => {
@@ -30,6 +29,7 @@ const Settings = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState(user?.email || "");
 
   const handleLogout = async () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [
@@ -54,6 +54,7 @@ const Settings = () => {
     setLastName(user?.last_name || "");
     setUsername(user?.username || "");
     setPhoneNumber(user?.phone_number || "");
+    setEmail(user?.email || "");
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
@@ -89,6 +90,7 @@ const Settings = () => {
         first_name: firstName,
         last_name: lastName,
         username: username || null,
+        email: email,
         phone_number: phoneNumber || null,
       };
 
@@ -98,7 +100,8 @@ const Settings = () => {
         updateData.password_confirmation = confirmPassword;
       }
 
-      await axios.put("/user/profile", updateData);
+      // Use the updateUser service
+      await updateUser(updateData);
       
       // Reload user data
       const updatedUser = await loadUser();
@@ -108,9 +111,13 @@ const Settings = () => {
       Alert.alert("Success", "Profile updated successfully!");
     } catch (error: any) {
       if (error.response?.status === 422) {
-        const errors = error.response.data.errors;
-        const errorMessages = Object.values(errors).flat().join("\n");
-        setEditError(errorMessages as string);
+        const errors = error.response.data.errors || error.response.data.message;
+        if (typeof errors === 'object') {
+            const errorMessages = Object.values(errors).flat().join("\n");
+            setEditError(errorMessages as string);
+        } else {
+            setEditError(errors as string);
+        }
       } else if (error.response?.data?.message) {
         setEditError(error.response.data.message);
       } else {
@@ -280,6 +287,17 @@ const Settings = () => {
                 onChangeText={setUsername}
                 placeholder="Enter username"
                 placeholderTextColor="#9CA3AF"
+              />
+
+              <Text style={styles.inputLabel}>Email</Text>
+              <TextInput
+                style={styles.input}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Enter email address"
+                placeholderTextColor="#9CA3AF"
+                keyboardType="email-address"
+                autoCapitalize="none"
               />
 
               <Text style={styles.inputLabel}>Phone Number</Text>
