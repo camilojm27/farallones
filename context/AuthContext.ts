@@ -15,9 +15,13 @@ export interface User {
 export interface AuthContextType {
   user: User | null;
   setUser: Dispatch<SetStateAction<User | null>>;
+  isOffline: boolean;
+  setIsOffline: Dispatch<SetStateAction<boolean>>;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   setUser: () => {},
+  isOffline: false,
+  setIsOffline: () => {},
 });

@@ -50,32 +50,17 @@ export default function Login() {
       setUser(user);
       router.replace("/(tabs)");
     } catch (error: any) {
-      console.error("Login failed:", error);
-
       if (error.response?.status === 422) {
-        // Validation errors
-        const validationErrors = error.response.data?.errors;
-        if (validationErrors) {
-          setGeneralError(Object.values(validationErrors).flat().join(", "));
+        const errors = error.response.data?.errors;
+        if (errors) {
+          setGeneralError(Object.values(errors).flat().join("\n"));
         } else {
-          setGeneralError("Please check your input and try again.");
+          setGeneralError(error.response.data?.message ?? "Please check your credentials.");
         }
-      } else if (error.response?.status === 401) {
-        setGeneralError(
-          "Invalid credentials. Please check your email and password."
-        );
-      } else if (error.code === "NETWORK_ERROR" || !error.response) {
-        setGeneralError(
-          "Network error. Please check your internet connection and ensure the server is running."
-        );
+      } else if (!error.response) {
+        setGeneralError("Cannot reach the server. Please check your connection.");
       } else {
-        setGeneralError(
-          `An error occurred: ${
-            error.response?.data?.message ||
-            error.message ||
-            "Please try again."
-          }`
-        );
+        setGeneralError("An unexpected error occurred. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -143,7 +128,7 @@ export default function Login() {
           {isLoading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>Sign In</Text>
           )}
         </TouchableOpacity>
 
@@ -188,7 +173,6 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     marginBottom: 16,
-    alignItems: "center",
   },
   generalError: {
     color: "#DC2626",

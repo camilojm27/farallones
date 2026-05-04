@@ -1,6 +1,13 @@
 import axiosLib from "axios";
 import { getToken } from "../services/TokenService";
 
+let onTokenExpired: (() => void) | null = null;
+let isHandling401 = false;
+
+export function setTokenExpiredCallback(callback: () => void) {
+  onTokenExpired = callback;
+}
+
 const axios = axiosLib.create({
   baseURL: process.env.EXPO_PUBLIC_BACKEND_URL,
   headers: {
@@ -11,39 +18,34 @@ const axios = axiosLib.create({
 
 axios.interceptors.request.use(
   async (request) => {
-    console.log(
-      `Making ${request.method?.toUpperCase()} request to:`,
-      request.url
-    );
     const token = await getToken();
     if (token) {
       request.headers.Authorization = `Bearer ${token}`;
     }
     return request;
   },
-  (error) => {
-    console.error("Request interceptor error:", error);
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 axios.interceptors.response.use(
-  (response) => {
-    console.log(`Response from ${response.config.url}:`, response.status);
-    return response;
-  },
+  (response) => response,
   (error) => {
-    console.error("Response interceptor error:", {
-      url: error.config?.url,
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message,
-    });
+    const url: string = error.config?.url ?? "";
+    // Never handle 401s from the logout endpoint (it may already be expired)
+    // and deduplicate so rapid 401s don't fire the callback multiple times.
+    if (
+      error.response?.status === 401 &&
+      !url.includes("/logout") &&
+      !isHandling401
+    ) {
+      isHandling401 = true;
+      onTokenExpired?.();
+      setTimeout(() => {
+        isHandling401 = false;
+      }, 2000);
+    }
     return Promise.reject(error);
   }
 );
-
-// Add debugging
-console.log("Backend URL:", process.env.EXPO_PUBLIC_BACKEND_URL);
 
 export default axios;

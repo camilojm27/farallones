@@ -1,4 +1,5 @@
 import * as SecureStore from "expo-secure-store";
+import { User } from "../context/AuthContext";
 
 let token: string | null = null;
 
@@ -17,4 +18,24 @@ export async function getToken() {
   }
   token = await SecureStore.getItemAsync("token");
   return token;
+}
+
+export async function setCachedUser(user: User | null) {
+  if (user !== null) {
+    await SecureStore.setItemAsync("cached_user", JSON.stringify(user));
+    return;
+  }
+  await SecureStore.deleteItemAsync("cached_user");
+}
+
+export async function getCachedUser(): Promise<User | null> {
+  const raw = await SecureStore.getItemAsync("cached_user");
+  if (!raw) {
+    return null;
+  }
+  try {
+    return JSON.parse(raw) as User;
+  } catch {
+    return null;
+  }
 }

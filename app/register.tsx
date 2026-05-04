@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import React, { useState, useContext } from "react";
 import { router } from "expo-router";
@@ -59,7 +60,14 @@ export default function Register() {
       router.replace("/(tabs)");
     } catch (error: any) {
       if (error.response?.status === 422) {
-        setGeneralError(error.response.data.message);
+        const errors = error.response.data?.errors;
+        if (errors) {
+          setGeneralError(Object.values(errors).flat().join("\n"));
+        } else {
+          setGeneralError(error.response.data?.message ?? "Please check your input.");
+        }
+      } else if (!error.response) {
+        setGeneralError("Cannot reach the server. Please check your connection.");
       } else {
         setGeneralError("An unexpected error occurred. Please try again.");
       }
@@ -72,111 +80,117 @@ export default function Register() {
     <SafeAreaView style={styles.wrapper}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
+        style={styles.flex}
       >
-        <View style={styles.header}>
-          <Ionicons name="person-add-outline" size={50} color="#6B4C9A" />
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Start your journey with us</Text>
-        </View>
-
-        {generalError ? (
-          <View style={styles.errorContainer}>
-            <Text style={styles.generalError}>{generalError}</Text>
-          </View>
-        ) : null}
-
-        <Controller
-          control={control}
-          name="first_name"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <FormTextField
-              label="First Name"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              errors={errors.first_name ? [errors.first_name.message!] : []}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="last_name"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <FormTextField
-              label="Last Name"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              errors={errors.last_name ? [errors.last_name.message!] : []}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="email"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <FormTextField
-              label="Email address"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              keyboardType="email-address"
-              errors={errors.email ? [errors.email.message!] : []}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="password"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <FormTextField
-              label="Password"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              isPassword={true}
-              errors={errors.password ? [errors.password.message!] : []}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="password_confirmation"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <FormTextField
-              label="Confirm Password"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              isPassword={true}
-              errors={
-                errors.password_confirmation
-                  ? [errors.password_confirmation.message!]
-                  : []
-              }
-            />
-          )}
-        />
-
-        <TouchableOpacity
-          style={[styles.button, isLoading && styles.buttonDisabled]}
-          onPress={handleSubmit(handleRegister)}
-          disabled={isLoading}
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          {isLoading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>Create Account</Text>
-          )}
-        </TouchableOpacity>
+          <View style={styles.header}>
+            <Ionicons name="person-add-outline" size={50} color="#6B4C9A" />
+            <Text style={styles.title}>Create Account</Text>
+            <Text style={styles.subtitle}>Start your journey with us</Text>
+          </View>
 
-        <View style={styles.loginLinkContainer}>
-          <Text style={styles.loginText}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => router.push("/login")}>
-            <Text style={styles.loginLink}>Login here</Text>
+          {generalError ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.generalError}>{generalError}</Text>
+            </View>
+          ) : null}
+
+          <Controller
+            control={control}
+            name="first_name"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <FormTextField
+                label="First Name"
+                value={value}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                errors={errors.first_name ? [errors.first_name.message!] : []}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="last_name"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <FormTextField
+                label="Last Name"
+                value={value}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                errors={errors.last_name ? [errors.last_name.message!] : []}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <FormTextField
+                label="Email address"
+                value={value}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                keyboardType="email-address"
+                errors={errors.email ? [errors.email.message!] : []}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <FormTextField
+                label="Password"
+                value={value}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                isPassword={true}
+                errors={errors.password ? [errors.password.message!] : []}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="password_confirmation"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <FormTextField
+                label="Confirm Password"
+                value={value}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                isPassword={true}
+                errors={
+                  errors.password_confirmation
+                    ? [errors.password_confirmation.message!]
+                    : []
+                }
+              />
+            )}
+          />
+
+          <TouchableOpacity
+            style={[styles.button, isLoading && styles.buttonDisabled]}
+            onPress={handleSubmit(handleRegister)}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Create Account</Text>
+            )}
           </TouchableOpacity>
-        </View>
+
+          <View style={styles.loginLinkContainer}>
+            <Text style={styles.loginText}>Already have an account?</Text>
+            <TouchableOpacity onPress={() => router.push("/login")}>
+              <Text style={styles.loginLink}>Sign in here</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -187,10 +201,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FAFC",
     flex: 1,
   },
-  container: {
+  flex: {
     flex: 1,
+  },
+  container: {
+    flexGrow: 1,
     justifyContent: "center",
     paddingHorizontal: 24,
+    paddingVertical: 32,
   },
   header: {
     alignItems: "center",
@@ -212,7 +230,6 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     marginBottom: 16,
-    alignItems: "center",
   },
   generalError: {
     color: "#DC2626",

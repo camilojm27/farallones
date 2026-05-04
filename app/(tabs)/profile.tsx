@@ -141,8 +141,8 @@ const Settings = () => {
 
   if (!user) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>No user data available</Text>
+      <View style={[styles.container, styles.centered]}>
+        <Text style={styles.placeholderText}>Loading profile...</Text>
       </View>
     );
   }
@@ -499,10 +499,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  errorText: {
+  centered: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  placeholderText: {
     fontSize: 16,
-    color: "#FF6B6B",
-    textAlign: "center",
+    color: "#94A3B8",
   },
   bottomPadding: {
     height: 40,
