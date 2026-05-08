@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from "react-native";
 import React, { useContext } from "react";
-import { router } from "expo-router";
 import { AuthContext } from "../../context/AuthContext";
 import { COLORS } from "../../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";

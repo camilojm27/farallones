@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -24,21 +24,21 @@ export default function CommunityDetailsScreen() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
 
-  const fetchDetails = async () => {
+  const fetchDetails = useCallback(async () => {
     try {
       const data = await CommunityService.getCommunityDetails(Number(id));
       setCommunity(data);
-    } catch (error: any) {
+    } catch {
       Alert.alert('Error', 'No se pudo cargar la información de la comunidad');
       router.back();
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, router]);
 
   useEffect(() => {
     fetchDetails();
-  }, [id]);
+  }, [fetchDetails]);
 
   const handleJoin = async () => {
     setActionLoading(true);
@@ -65,7 +65,7 @@ export default function CommunityDetailsScreen() {
             await CommunityService.leaveCommunity(Number(id));
             Alert.alert('Comunidad abandonada', 'Has dejado la comunidad exitosamente');
             fetchDetails();
-          } catch (error: any) {
+          } catch {
             Alert.alert('Error', 'No se pudo abandonar la comunidad');
           } finally {
             setActionLoading(false);
@@ -258,7 +258,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     justifyContent: 'center',
     alignItems: 'center',
-    backdropFilter: 'blur(10px)', // subtle modern touch
   },
   heroOverlay: {
     position: 'absolute',
