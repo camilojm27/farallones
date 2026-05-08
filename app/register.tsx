@@ -18,6 +18,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Ionicons } from "@expo/vector-icons";
+import { COLORS } from "../constants/Colors";
 
 const RegisterSchema = z
   .object({
@@ -88,9 +89,11 @@ export default function Register() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
-            <Ionicons name="person-add-outline" size={50} color="#6B4C9A" />
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>Start your journey with us</Text>
+            <View style={styles.iconContainer}>
+              <Ionicons name="trail-sign-outline" size={40} color={COLORS.white} />
+            </View>
+            <Text style={styles.title}>Crear Cuenta</Text>
+            <Text style={styles.subtitle}>Empieza tu aventura con nosotros</Text>
           </View>
 
           {generalError ? (
@@ -104,7 +107,7 @@ export default function Register() {
             name="first_name"
             render={({ field: { onChange, onBlur, value } }) => (
               <FormTextField
-                label="First Name"
+                label="Nombre"
                 value={value}
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -117,7 +120,7 @@ export default function Register() {
             name="last_name"
             render={({ field: { onChange, onBlur, value } }) => (
               <FormTextField
-                label="Last Name"
+                label="Apellido"
                 value={value}
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -130,7 +133,7 @@ export default function Register() {
             name="email"
             render={({ field: { onChange, onBlur, value } }) => (
               <FormTextField
-                label="Email address"
+                label="Correo electrónico"
                 value={value}
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -144,7 +147,7 @@ export default function Register() {
             name="password"
             render={({ field: { onChange, onBlur, value } }) => (
               <FormTextField
-                label="Password"
+                label="Contraseña"
                 value={value}
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -158,7 +161,7 @@ export default function Register() {
             name="password_confirmation"
             render={({ field: { onChange, onBlur, value } }) => (
               <FormTextField
-                label="Confirm Password"
+                label="Confirmar Contraseña"
                 value={value}
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -178,16 +181,16 @@ export default function Register() {
             disabled={isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={COLORS.text} />
             ) : (
-              <Text style={styles.buttonText}>Create Account</Text>
+              <Text style={styles.buttonText}>Crear Cuenta</Text>
             )}
           </TouchableOpacity>
 
           <View style={styles.loginLinkContainer}>
-            <Text style={styles.loginText}>Already have an account?</Text>
+            <Text style={styles.loginText}>¿Ya tienes una cuenta?</Text>
             <TouchableOpacity onPress={() => router.push("/login")}>
-              <Text style={styles.loginLink}>Sign in here</Text>
+              <Text style={styles.loginLink}>Inicia sesión aquí</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -198,7 +201,7 @@ export default function Register() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: "#F8FAFC",
+    backgroundColor: COLORS.background,
     flex: 1,
   },
   flex: {
@@ -207,65 +210,89 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     justifyContent: "center",
-    paddingHorizontal: 24,
-    paddingVertical: 32,
+    paddingHorizontal: 32,
+    paddingVertical: 40,
   },
   header: {
     alignItems: "center",
     marginBottom: 40,
   },
+  iconContainer: {
+    width: 80,
+    height: 80,
+    backgroundColor: COLORS.primary,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 8,
+  },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#1E293B",
-    marginTop: 16,
+    color: COLORS.text,
+    marginTop: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: "#64748B",
+    color: COLORS.gray,
     marginTop: 8,
   },
   errorContainer: {
-    backgroundColor: "#FECACA",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
+    backgroundColor: 'rgba(255, 107, 107, 0.1)',
+    padding: 14,
+    borderRadius: 12,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 107, 107, 0.3)',
   },
   generalError: {
-    color: "#DC2626",
+    color: COLORS.accent,
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
+    textAlign: "center",
   },
   button: {
-    backgroundColor: "#6B4C9A",
-    paddingVertical: 14,
-    borderRadius: 8,
+    backgroundColor: COLORS.secondary,
+    paddingVertical: 16,
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-    marginTop: 16,
+    marginTop: 24,
+    shadowColor: COLORS.secondary,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 6,
   },
   buttonDisabled: {
-    backgroundColor: "#9B8BBF",
+    backgroundColor: COLORS.lightGray,
+    shadowOpacity: 0,
+    elevation: 0,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: COLORS.text,
+    fontSize: 18,
     fontWeight: "bold",
   },
   loginLinkContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 24,
+    marginTop: 32,
   },
   loginText: {
-    color: "#475569",
-    fontSize: 14,
+    color: COLORS.gray,
+    fontSize: 15,
   },
   loginLink: {
-    color: "#6B4C9A",
-    fontSize: 14,
+    color: COLORS.primary,
+    fontSize: 15,
     fontWeight: "bold",
-    marginLeft: 4,
+    marginLeft: 6,
   },
 });

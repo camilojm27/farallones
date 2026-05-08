@@ -16,6 +16,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Ionicons } from "@expo/vector-icons";
+import { COLORS } from "../constants/Colors";
 
 const ForgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -67,16 +68,18 @@ export default function ForgotPassword() {
         style={styles.container}
       >
         <View style={styles.header}>
-          <Ionicons name="mail-outline" size={50} color="#6B4C9A" />
-          <Text style={styles.title}>Forgot Password?</Text>
+          <View style={styles.iconContainer}>
+            <Ionicons name="mail-outline" size={40} color={COLORS.white} />
+          </View>
+          <Text style={styles.title}>¿Olvidaste tu contraseña?</Text>
           <Text style={styles.subtitle}>
-            Enter your email and we'll send a reset link.
+            Ingresa tu correo y te enviaremos un enlace de recuperación.
           </Text>
         </View>
 
         {successMessage ? (
           <View style={styles.successContainer}>
-            <Ionicons name="checkmark-circle" size={24} color="#065F46" style={styles.successIcon} />
+            <Ionicons name="checkmark-circle" size={24} color={COLORS.success} style={styles.successIcon} />
             <Text style={styles.successText}>{successMessage}</Text>
           </View>
         ) : null}
@@ -86,7 +89,7 @@ export default function ForgotPassword() {
           name="email"
           render={({ field: { onChange, onBlur, value } }) => (
             <FormTextField
-              label="Email address"
+              label="Correo electrónico"
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
@@ -102,9 +105,9 @@ export default function ForgotPassword() {
           disabled={isLoading}
         >
           {isLoading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={COLORS.text} />
           ) : (
-            <Text style={styles.buttonText}>Send Reset Link</Text>
+            <Text style={styles.buttonText}>Enviar enlace</Text>
           )}
         </TouchableOpacity>
 
@@ -112,8 +115,8 @@ export default function ForgotPassword() {
           style={styles.backLink}
           onPress={() => router.back()}
         >
-          <Ionicons name="arrow-back" size={16} color="#6B4C9A" />
-          <Text style={styles.backText}>Back to sign in</Text>
+          <Ionicons name="arrow-back" size={16} color={COLORS.primary} />
+          <Text style={styles.backText}>Volver a iniciar sesión</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -122,77 +125,101 @@ export default function ForgotPassword() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: "#F8FAFC",
+    backgroundColor: COLORS.background,
     flex: 1,
   },
   container: {
     flex: 1,
     justifyContent: "center",
-    paddingHorizontal: 24,
+    paddingHorizontal: 32,
   },
   header: {
     alignItems: "center",
-    marginBottom: 40,
+    marginBottom: 48,
+  },
+  iconContainer: {
+    width: 80,
+    height: 80,
+    backgroundColor: COLORS.primary,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 8,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#1E293B",
-    marginTop: 16,
+    color: COLORS.text,
+    marginTop: 8,
+    textAlign: "center",
   },
   subtitle: {
     fontSize: 16,
-    color: "#64748B",
+    color: COLORS.gray,
     marginTop: 8,
     textAlign: "center",
-    lineHeight: 22,
+    lineHeight: 24,
   },
   successContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
-    backgroundColor: "#D1FAE5",
-    padding: 14,
-    borderRadius: 8,
-    marginBottom: 20,
+    backgroundColor: 'rgba(90, 140, 111, 0.1)',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 24,
     gap: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(90, 140, 111, 0.3)',
   },
   successIcon: {
-    marginTop: 1,
+    marginTop: 2,
   },
   successText: {
-    color: "#065F46",
-    fontSize: 14,
-    fontWeight: "500",
+    color: COLORS.success,
+    fontSize: 15,
+    fontWeight: "600",
     flex: 1,
-    lineHeight: 20,
+    lineHeight: 22,
   },
   button: {
-    backgroundColor: "#6B4C9A",
-    paddingVertical: 14,
-    borderRadius: 8,
+    backgroundColor: COLORS.secondary,
+    paddingVertical: 16,
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-    marginTop: 8,
+    marginTop: 16,
+    shadowColor: COLORS.secondary,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 6,
   },
   buttonDisabled: {
-    backgroundColor: "#9B8BBF",
+    backgroundColor: COLORS.lightGray,
+    shadowOpacity: 0,
+    elevation: 0,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: COLORS.text,
+    fontSize: 18,
     fontWeight: "bold",
   },
   backLink: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 24,
-    gap: 6,
+    marginTop: 32,
+    gap: 8,
   },
   backText: {
-    color: "#6B4C9A",
-    fontSize: 14,
-    fontWeight: "600",
+    color: COLORS.primary,
+    fontSize: 15,
+    fontWeight: "bold",
   },
 });

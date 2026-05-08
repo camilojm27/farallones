@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { COLORS } from "../constants/Colors";
 
 interface Props extends TextInputProps {
   label: string;
@@ -22,6 +23,7 @@ export default function FormTextField({
   ...rest
 }: Props) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible((prev) => !prev);
@@ -30,11 +32,14 @@ export default function FormTextField({
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, isFocused && styles.inputFocused, errors.length > 0 && styles.inputError]}>
         <TextInput
           style={styles.textInput}
           autoCapitalize="none"
           secureTextEntry={isPassword && !isPasswordVisible}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholderTextColor={COLORS.gray}
           {...rest}
         ></TextInput>
         {isPassword && (
@@ -45,7 +50,7 @@ export default function FormTextField({
             <Ionicons
               name={isPasswordVisible ? "eye-off" : "eye"}
               size={24}
-              color="gray"
+              color={COLORS.gray}
             />
           </TouchableOpacity>
         )}
@@ -66,28 +71,41 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   label: {
-    color: "#334155",
-    fontWeight: "500",
-    marginBottom: 4,
+    color: COLORS.text,
+    fontWeight: "600",
+    marginBottom: 6,
+    fontSize: 14,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F1F5F9",
-    borderRadius: 4,
-    borderColor: "#CBD5E1",
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    borderColor: COLORS.lightGray,
     borderWidth: 1,
+  },
+  inputFocused: {
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.white,
+  },
+  inputError: {
+    borderColor: COLORS.accent,
   },
   textInput: {
     flex: 1,
-    height: 40,
-    padding: 10,
+    height: 48,
+    paddingHorizontal: 14,
+    color: COLORS.text,
+    fontSize: 16,
   },
   icon: {
     padding: 10,
+    paddingRight: 14,
   },
   error: {
-    color: "red",
-    marginTop: 4,
+    color: COLORS.accent,
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: "500",
   },
 });

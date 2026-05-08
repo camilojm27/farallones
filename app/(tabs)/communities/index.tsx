@@ -5,18 +5,7 @@ import { CommunityService } from '../../../services/CommunityService';
 import { Community } from '../../../types';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome } from '@expo/vector-icons';
-
-const COLORS = {
-    primary: '#6B4C9A', // Mountain Purple
-    secondary: '#F5B800', // Dawn Yellow
-    accent: '#FF6B6B', // Adventure Coral
-    neutralLight: '#FAFAFA', // Mist White
-    neutralDark: '#3D3D5C', // Rock Gray
-    minorAccent: '#5A8C6F', // Green
-    white: '#FFFFFF',
-    gray: '#666666',
-    border: '#E0E0E0',
-};
+import { COLORS } from '../../../constants/Colors';
 
 export default function CommunitiesScreen() {
     const router = useRouter();
@@ -31,21 +20,20 @@ export default function CommunitiesScreen() {
             const newSections = [];
             
             if (data.owned_communities && data.owned_communities.length > 0) {
-                newSections.push({ title: 'Managed by me', data: data.owned_communities });
+                newSections.push({ title: 'Administradas por mí', data: data.owned_communities });
             }
             
             if (data.my_communities && data.my_communities.length > 0) {
-                newSections.push({ title: 'My Communities', data: data.my_communities });
+                newSections.push({ title: 'Mis Comunidades', data: data.my_communities });
             }
 
             if (data.other_communities && data.other_communities.length > 0) {
-                newSections.push({ title: 'Discover Communities', data: data.other_communities });
+                newSections.push({ title: 'Descubrir Comunidades', data: data.other_communities });
             }
 
             setSections(newSections);
         } catch (error: any) {
             console.error('Failed to fetch communities:', error);
-            // Check if it's a network error or backend error
             const message = error.response?.data?.message || error.message || 'Failed to fetch communities';
             Alert.alert('Error', message);
         } finally {
@@ -70,15 +58,16 @@ export default function CommunitiesScreen() {
         >
             <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>{item.name}</Text>
-                <FontAwesome name="chevron-right" size={14} color={COLORS.gray} />
+                <View style={styles.iconCircle}>
+                    <FontAwesome name="chevron-right" size={12} color={COLORS.primary} />
+                </View>
             </View>
             <Text style={styles.cardDescription} numberOfLines={2}>{item.description}</Text>
             
-            {/* Optional: Add some visual indicators or stats here */}
             <View style={styles.cardFooter}>
                 {item.address ? (
                      <View style={styles.locationContainer}>
-                        <FontAwesome name="map-marker" size={12} color={COLORS.minorAccent} style={{marginRight: 4}} />
+                        <FontAwesome name="map-marker" size={12} color={COLORS.success} style={{marginRight: 6}} />
                         <Text style={styles.locationText} numberOfLines={1}>{item.address}</Text>
                      </View>
                 ) : <View />}
@@ -102,15 +91,15 @@ export default function CommunitiesScreen() {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-            <StatusBar barStyle="dark-content" backgroundColor={COLORS.neutralLight} />
+            <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Communities</Text>
+                <Text style={styles.headerTitle}>Comunidades</Text>
                 <TouchableOpacity
                     style={styles.createButton}
                     onPress={() => router.push('/(tabs)/communities/create')}
                 >
-                    <FontAwesome name="plus" size={16} color="#fff" />
-                    <Text style={styles.createButtonText}>Create</Text>
+                    <FontAwesome name="plus" size={16} color={COLORS.primary} />
+                    <Text style={styles.createButtonText}>Crear</Text>
                 </TouchableOpacity>
             </View>
 
@@ -124,9 +113,9 @@ export default function CommunitiesScreen() {
                 }
                 ListEmptyComponent={() => (
                     <View style={styles.emptyContainer}>
-                        <Text style={styles.emptyText}>No communities found.</Text>
+                        <Text style={styles.emptyText}>No se encontraron comunidades.</Text>
                         <TouchableOpacity onPress={onRefresh} style={styles.refreshButton}>
-                            <Text style={styles.refreshButtonText}>Refresh</Text>
+                            <Text style={styles.refreshButtonText}>Actualizar</Text>
                         </TouchableOpacity>
                     </View>
                 )}
@@ -140,93 +129,99 @@ export default function CommunitiesScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.neutralLight,
+        backgroundColor: COLORS.background,
     },
     centered: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: COLORS.neutralLight,
+        backgroundColor: COLORS.background,
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 20,
-        backgroundColor: COLORS.white,
-        borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
+        padding: 24,
+        backgroundColor: COLORS.background,
     },
     headerTitle: {
         fontSize: 28,
         fontWeight: 'bold',
         color: COLORS.primary,
-        fontFamily: 'System',
+        letterSpacing: -0.5,
     },
     createButton: {
         backgroundColor: COLORS.secondary,
         paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 20,
+        paddingVertical: 10,
+        borderRadius: 24,
         flexDirection: 'row',
         alignItems: 'center',
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
+        elevation: 4,
+        shadowColor: COLORS.secondary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
     },
     createButtonText: {
-        color: COLORS.neutralDark,
+        color: COLORS.primary,
         fontWeight: 'bold',
         marginLeft: 6,
         fontSize: 14,
     },
     listContent: {
-        padding: 16,
-        paddingBottom: 40,
+        padding: 20,
+        paddingBottom: 100, // Make room for floating tab bar
     },
     sectionHeader: {
-        marginBottom: 12,
-        marginTop: 8,
+        marginBottom: 16,
+        marginTop: 12,
     },
     sectionTitle: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: '700',
-        color: COLORS.neutralDark,
+        color: COLORS.text,
         letterSpacing: 0.5,
     },
     card: {
         backgroundColor: COLORS.white,
-        borderRadius: 16,
-        padding: 16,
+        borderRadius: 20,
+        padding: 20,
         marginBottom: 16,
-        shadowColor: COLORS.neutralDark,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 8,
+        shadowColor: COLORS.text,
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
         elevation: 3,
         borderWidth: 1,
-        borderColor: 'rgba(0,0,0,0.03)',
+        borderColor: COLORS.lightGray,
     },
     cardHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        marginBottom: 8,
+        alignItems: 'center',
+        marginBottom: 12,
     },
     cardTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: COLORS.neutralDark,
+        color: COLORS.primary,
         flex: 1,
-        marginRight: 8,
+        marginRight: 12,
+    },
+    iconCircle: {
+        width: 28,
+        height: 28,
+        borderRadius: 14,
+        backgroundColor: 'rgba(107, 76, 154, 0.1)',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     cardDescription: {
-        fontSize: 14,
+        fontSize: 15,
         color: COLORS.gray,
-        lineHeight: 20,
-        marginBottom: 12,
+        lineHeight: 22,
+        marginBottom: 16,
     },
     cardFooter: {
         flexDirection: 'row',
@@ -235,15 +230,15 @@ const styles = StyleSheet.create({
     locationContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F0F0F0',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 8,
+        backgroundColor: 'rgba(90, 140, 111, 0.1)',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 12,
     },
     locationText: {
-        fontSize: 12,
-        color: COLORS.gray,
-        maxWidth: 150,
+        fontSize: 13,
+        color: COLORS.success,
+        fontWeight: '500',
     },
     emptyContainer: {
         padding: 32,
@@ -258,7 +253,9 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     refreshButton: {
-        padding: 10,
+        padding: 12,
+        backgroundColor: 'rgba(107, 76, 154, 0.1)',
+        borderRadius: 12,
     },
     refreshButtonText: {
         color: COLORS.primary,

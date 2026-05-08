@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { CommunityService } from '../../../services/CommunityService';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome } from '@expo/vector-icons';
+import { COLORS } from '../../../constants/Colors';
 
 export default function CreateCommunityScreen() {
     const router = useRouter();
@@ -19,7 +20,7 @@ export default function CreateCommunityScreen() {
 
     const handleCreate = async () => {
         if (!formData.name) {
-            Alert.alert('Error', 'Community name is required');
+            Alert.alert('Error', 'El nombre de la comunidad es requerido');
             return;
         }
 
@@ -31,17 +32,17 @@ export default function CreateCommunityScreen() {
         setLoading(true);
         try {
             await CommunityService.createCommunity(dataToSubmit);
-            Alert.alert('Success', 'Community created successfully', [
+            Alert.alert('Éxito', 'Comunidad creada exitosamente', [
                 { text: 'OK', onPress: () => router.back() }
             ]);
         } catch (error: any) {
             console.error('Failed to create community:', error);
-            const message = error.response?.data?.message || 'Failed to create community. Please try again.';
+            const message = error.response?.data?.message || 'Hubo un error al crear la comunidad. Por favor, intenta de nuevo.';
             const validationErrors = error.response?.data?.errors;
             
             if (validationErrors) {
                 const errorMessages = Object.values(validationErrors).flat().join('\n');
-                Alert.alert('Validation Error', errorMessages);
+                Alert.alert('Error de Validación', errorMessages);
             } else {
                 Alert.alert('Error', message);
             }
@@ -54,75 +55,81 @@ export default function CreateCommunityScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                    <FontAwesome name="arrow-left" size={20} color="#333" />
+                    <FontAwesome name="arrow-left" size={20} color={COLORS.primary} />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Create Community</Text>
-                <View style={{ width: 20 }} />
+                <Text style={styles.headerTitle}>Crear Comunidad</Text>
+                <View style={{ width: 40 }} />
             </View>
 
             <ScrollView contentContainerStyle={styles.content}>
                 <View style={styles.formGroup}>
-                    <Text style={styles.label}>Name *</Text>
+                    <Text style={styles.label}>Nombre *</Text>
                     <TextInput
                         style={styles.input}
                         value={formData.name}
                         onChangeText={(text) => setFormData({ ...formData, name: text })}
-                        placeholder="Community Name"
+                        placeholder="Nombre de la comunidad"
+                        placeholderTextColor={COLORS.gray}
                     />
                 </View>
 
                 <View style={styles.formGroup}>
-                    <Text style={styles.label}>Description</Text>
+                    <Text style={styles.label}>Descripción</Text>
                     <TextInput
                         style={[styles.input, styles.textArea]}
                         value={formData.description}
                         onChangeText={(text) => setFormData({ ...formData, description: text })}
-                        placeholder="What is this community about?"
+                        placeholder="¿De qué trata esta comunidad?"
+                        placeholderTextColor={COLORS.gray}
                         multiline
                         numberOfLines={4}
                     />
                 </View>
 
                 <View style={styles.formGroup}>
-                    <Text style={styles.label}>Address</Text>
+                    <Text style={styles.label}>Dirección</Text>
                     <TextInput
                         style={styles.input}
                         value={formData.address}
                         onChangeText={(text) => setFormData({ ...formData, address: text })}
-                        placeholder="Physical location (optional)"
+                        placeholder="Ubicación física (opcional)"
+                        placeholderTextColor={COLORS.gray}
                     />
                 </View>
 
                 <View style={styles.formGroup}>
-                    <Text style={styles.label}>Phone Number</Text>
+                    <Text style={styles.label}>Teléfono</Text>
                     <TextInput
                         style={styles.input}
                         value={formData.phone_number}
                         onChangeText={(text) => setFormData({ ...formData, phone_number: text })}
-                        placeholder="Contact phone (optional)"
+                        placeholder="Teléfono de contacto (opcional)"
+                        placeholderTextColor={COLORS.gray}
                         keyboardType="phone-pad"
                     />
                 </View>
 
                 <View style={styles.formGroup}>
-                    <Text style={styles.label}>Email</Text>
+                    <Text style={styles.label}>Correo electrónico</Text>
                     <TextInput
                         style={styles.input}
                         value={formData.email}
                         onChangeText={(text) => setFormData({ ...formData, email: text })}
-                        placeholder="Contact email (optional)"
+                        placeholder="Correo de contacto (opcional)"
+                        placeholderTextColor={COLORS.gray}
                         keyboardType="email-address"
                         autoCapitalize="none"
                     />
                 </View>
 
                 <View style={styles.formGroup}>
-                    <Text style={styles.label}>Website</Text>
+                    <Text style={styles.label}>Sitio Web</Text>
                     <TextInput
                         style={styles.input}
                         value={formData.website}
                         onChangeText={(text) => setFormData({ ...formData, website: text })}
-                        placeholder="Website URL (optional)"
+                        placeholder="URL del sitio web (opcional)"
+                        placeholderTextColor={COLORS.gray}
                         autoCapitalize="none"
                     />
                 </View>
@@ -133,9 +140,9 @@ export default function CreateCommunityScreen() {
                     disabled={loading}
                 >
                     {loading ? (
-                        <ActivityIndicator color="#fff" />
+                        <ActivityIndicator color={COLORS.text} />
                     ) : (
-                        <Text style={styles.submitButtonText}>Create Community</Text>
+                        <Text style={styles.submitButtonText}>Crear Comunidad</Text>
                     )}
                 </TouchableOpacity>
             </ScrollView>
@@ -146,25 +153,30 @@ export default function CreateCommunityScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: COLORS.background,
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 16,
+        paddingTop: 20,
+        backgroundColor: COLORS.background,
         borderBottomWidth: 1,
-        borderBottomColor: '#e0e0e0',
+        borderBottomColor: COLORS.lightGray,
     },
     backButton: {
-        padding: 8,
+        padding: 10,
+        backgroundColor: 'rgba(107, 76, 154, 0.1)',
+        borderRadius: 12,
     },
     headerTitle: {
         fontSize: 20,
         fontWeight: 'bold',
+        color: COLORS.text,
     },
     content: {
-        padding: 20,
+        padding: 24,
     },
     formGroup: {
         marginBottom: 20,
@@ -173,33 +185,41 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         marginBottom: 8,
-        color: '#333',
+        color: COLORS.text,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 8,
-        padding: 12,
+        borderColor: COLORS.lightGray,
+        borderRadius: 12,
+        padding: 14,
         fontSize: 16,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: COLORS.white,
+        color: COLORS.text,
     },
     textArea: {
-        height: 100,
+        height: 120,
         textAlignVertical: 'top',
     },
     submitButton: {
-        backgroundColor: '#007bff',
+        backgroundColor: COLORS.secondary,
         padding: 16,
-        borderRadius: 8,
+        borderRadius: 16,
         alignItems: 'center',
-        marginTop: 20,
-        marginBottom: 40,
+        marginTop: 24,
+        marginBottom: 60,
+        shadowColor: COLORS.secondary,
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+        elevation: 6,
     },
     disabledButton: {
-        opacity: 0.7,
+        backgroundColor: COLORS.lightGray,
+        shadowOpacity: 0,
+        elevation: 0,
     },
     submitButtonText: {
-        color: '#fff',
+        color: COLORS.text,
         fontSize: 18,
         fontWeight: 'bold',
     },

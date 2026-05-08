@@ -17,6 +17,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Ionicons } from "@expo/vector-icons";
+import { COLORS } from "../constants/Colors";
 
 const LoginSchema = z.object({
   email: z.email("Please enter a valid email address."),
@@ -74,9 +75,11 @@ export default function Login() {
         style={styles.container}
       >
         <View style={styles.header}>
-          <Ionicons name="lock-closed-outline" size={50} color="#6B4C9A" />
-          <Text style={styles.title}>Welcome Back!</Text>
-          <Text style={styles.subtitle}>Sign in to your account</Text>
+          <View style={styles.iconContainer}>
+            <Ionicons name="compass-outline" size={40} color={COLORS.white} />
+          </View>
+          <Text style={styles.title}>¡Bienvenido de vuelta!</Text>
+          <Text style={styles.subtitle}>Inicia sesión para tu próxima aventura</Text>
         </View>
 
         {generalError ? (
@@ -90,7 +93,7 @@ export default function Login() {
           name="email"
           render={({ field: { onChange, onBlur, value } }) => (
             <FormTextField
-              label="Email address"
+              label="Correo electrónico"
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
@@ -104,7 +107,7 @@ export default function Login() {
           name="password"
           render={({ field: { onChange, onBlur, value } }) => (
             <FormTextField
-              label="Password"
+              label="Contraseña"
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
@@ -117,7 +120,7 @@ export default function Login() {
           style={styles.forgotPassword}
           onPress={() => router.push("/forgot-password")}
         >
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -126,16 +129,16 @@ export default function Login() {
           disabled={isLoading}
         >
           {isLoading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={COLORS.text} />
           ) : (
-            <Text style={styles.buttonText}>Sign In</Text>
+            <Text style={styles.buttonText}>Iniciar Sesión</Text>
           )}
         </TouchableOpacity>
 
         <View style={styles.registerLinkContainer}>
-          <Text style={styles.registerText}>Don't have an account?</Text>
+          <Text style={styles.registerText}>¿No tienes una cuenta?</Text>
           <TouchableOpacity onPress={() => router.push("/register")}>
-            <Text style={styles.registerLink}>Register here</Text>
+            <Text style={styles.registerLink}>Regístrate aquí</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -145,78 +148,102 @@ export default function Login() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: "#F8FAFC",
+    backgroundColor: COLORS.background,
     flex: 1,
   },
   container: {
     flex: 1,
     justifyContent: "center",
-    paddingHorizontal: 24,
+    paddingHorizontal: 32,
   },
   header: {
     alignItems: "center",
-    marginBottom: 40,
+    marginBottom: 48,
+  },
+  iconContainer: {
+    width: 80,
+    height: 80,
+    backgroundColor: COLORS.primary,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 8,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#1E293B",
-    marginTop: 16,
+    color: COLORS.text,
+    marginTop: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: "#64748B",
+    color: COLORS.gray,
     marginTop: 8,
   },
   errorContainer: {
-    backgroundColor: "#FECACA",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
+    backgroundColor: 'rgba(255, 107, 107, 0.1)',
+    padding: 14,
+    borderRadius: 12,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 107, 107, 0.3)',
   },
   generalError: {
-    color: "#DC2626",
+    color: COLORS.accent,
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
+    textAlign: "center",
   },
   forgotPassword: {
     alignSelf: "flex-end",
-    marginBottom: 24,
+    marginBottom: 32,
   },
   forgotPasswordText: {
-    color: "#6B4C9A",
+    color: COLORS.primary,
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   button: {
-    backgroundColor: "#6B4C9A",
-    paddingVertical: 14,
-    borderRadius: 8,
+    backgroundColor: COLORS.secondary,
+    paddingVertical: 16,
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
+    shadowColor: COLORS.secondary,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 6,
   },
   buttonDisabled: {
-    backgroundColor: "#9B8BBF",
+    backgroundColor: COLORS.lightGray,
+    shadowOpacity: 0,
+    elevation: 0,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: COLORS.text,
+    fontSize: 18,
     fontWeight: "bold",
   },
   registerLinkContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 24,
+    marginTop: 32,
   },
   registerText: {
-    color: "#475569",
-    fontSize: 14,
+    color: COLORS.gray,
+    fontSize: 15,
   },
   registerLink: {
-    color: "#6B4C9A",
-    fontSize: 14,
+    color: COLORS.primary,
+    fontSize: 15,
     fontWeight: "bold",
-    marginLeft: 4,
+    marginLeft: 6,
   },
 });

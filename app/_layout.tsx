@@ -5,6 +5,7 @@ import { loadUser, logout, ServiceUnavailableError } from "../services/AuthServi
 import { getToken } from "../services/TokenService";
 import { setTokenExpiredCallback } from "../utils/axios";
 import SplashScreen from "./splash";
+import { StatusBar } from "expo-status-bar";
 
 export default function Layout() {
   const [user, setUser] = useState<User | null>(null);
@@ -72,6 +73,7 @@ export default function Layout() {
 
   return (
     <AuthContext.Provider value={{ user, setUser, isOffline, setIsOffline }}>
+      <StatusBar style="dark" />
       <Stack initialRouteName="login">
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="communities" options={{ headerShown: false }} />

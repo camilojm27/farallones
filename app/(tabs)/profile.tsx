@@ -14,6 +14,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { logout, loadUser, updateUser } from "../../services/AuthService";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { COLORS } from "../../constants/Colors";
 
 const Settings = () => {
   const { user, setUser } = useContext(AuthContext);
@@ -32,13 +33,13 @@ const Settings = () => {
   const [email, setEmail] = useState(user?.email || "");
 
   const handleLogout = async () => {
-    Alert.alert("Logout", "Are you sure you want to logout?", [
+    Alert.alert("Cerrar Sesión", "¿Estás seguro que deseas cerrar sesión?", [
       {
-        text: "Cancel",
+        text: "Cancelar",
         style: "cancel",
       },
       {
-        text: "Logout",
+        text: "Cerrar Sesión",
         style: "destructive",
         onPress: async () => {
           await logout();
@@ -70,17 +71,17 @@ const Settings = () => {
       // Validate passwords if provided
       if (newPassword) {
         if (newPassword.length < 8) {
-          setEditError("Password must be at least 8 characters long.");
+          setEditError("La contraseña debe tener al menos 8 caracteres.");
           setIsLoading(false);
           return;
         }
         if (newPassword !== confirmPassword) {
-          setEditError("Passwords do not match.");
+          setEditError("Las contraseñas no coinciden.");
           setIsLoading(false);
           return;
         }
         if (!currentPassword) {
-          setEditError("Current password is required to change password.");
+          setEditError("La contraseña actual es requerida para cambiar la contraseña.");
           setIsLoading(false);
           return;
         }
@@ -108,7 +109,7 @@ const Settings = () => {
       setUser(updatedUser);
       
       setIsEditModalVisible(false);
-      Alert.alert("Success", "Profile updated successfully!");
+      Alert.alert("Éxito", "¡Perfil actualizado exitosamente!");
     } catch (error: any) {
       if (error.response?.status === 422) {
         const errors = error.response.data.errors || error.response.data.message;
@@ -121,7 +122,7 @@ const Settings = () => {
       } else if (error.response?.data?.message) {
         setEditError(error.response.data.message);
       } else {
-        setEditError("An unexpected error occurred. Please try again.");
+        setEditError("Ocurrió un error inesperado. Inténtalo de nuevo.");
       }
     } finally {
       setIsLoading(false);
@@ -130,25 +131,23 @@ const Settings = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString("es-ES", {
       year: "numeric",
       month: "long",
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
   };
 
   if (!user) {
     return (
       <View style={[styles.container, styles.centered]}>
-        <Text style={styles.placeholderText}>Loading profile...</Text>
+        <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
         <View style={styles.avatarContainer}>
           <Text style={styles.avatarText}>
@@ -163,79 +162,70 @@ const Settings = () => {
           <Text style={styles.userUsername}>@{user.username}</Text>
         )}
         <TouchableOpacity style={styles.editButton} onPress={openEditModal}>
-          <Ionicons name="pencil" size={16} color="#FAFAFA" />
-          <Text style={styles.editButtonText}>Edit Profile</Text>
+          <Ionicons name="pencil" size={16} color={COLORS.text} />
+          <Text style={styles.editButtonText}>Editar Perfil</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Profile Information</Text>
+        <Text style={styles.sectionTitle}>Información Personal</Text>
 
         <View style={styles.infoCard}>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Email</Text>
+            <Text style={styles.infoLabel}>Correo electrónico</Text>
             <Text style={styles.infoValue}>{user.email}</Text>
           </View>
 
           {user.email_verified_at && (
             <View style={styles.verifiedBadge}>
-              <Text style={styles.verifiedText}>✓ Email Verified</Text>
+              <Ionicons name="checkmark-circle" size={16} color={COLORS.success} />
+              <Text style={styles.verifiedText}>Correo verificado</Text>
             </View>
           )}
 
           {user.phone_number && (
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Phone Number</Text>
+              <Text style={styles.infoLabel}>Teléfono</Text>
               <Text style={styles.infoValue}>{user.phone_number}</Text>
             </View>
           )}
 
           {user.username && (
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Username</Text>
-              <Text style={styles.infoValue}>{user.username}</Text>
+              <Text style={styles.infoLabel}>Usuario</Text>
+              <Text style={styles.infoValue}>@{user.username}</Text>
             </View>
           )}
 
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>User ID</Text>
+            <Text style={styles.infoLabel}>ID de Usuario</Text>
             <Text style={styles.infoValue}>#{user.id}</Text>
           </View>
         </View>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Account Details</Text>
+        <Text style={styles.sectionTitle}>Detalles de Cuenta</Text>
 
         <View style={styles.infoCard}>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Member Since</Text>
+            <Text style={styles.infoLabel}>Miembro desde</Text>
             <Text style={styles.infoValue}>{formatDate(user.created_at)}</Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Last Updated</Text>
+            <Text style={styles.infoLabel}>Última actualización</Text>
             <Text style={styles.infoValue}>{formatDate(user.updated_at)}</Text>
           </View>
-
-          {user.email_verified_at && (
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Email Verified On</Text>
-              <Text style={styles.infoValue}>
-                {formatDate(user.email_verified_at)}
-              </Text>
-            </View>
-          )}
         </View>
       </View>
 
       <View style={styles.section}>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
+          <Ionicons name="log-out-outline" size={20} color={COLORS.white} />
+          <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
         </TouchableOpacity>
       </View>
-
-      <View style={styles.bottomPadding} />
 
       {/* Edit Profile Modal */}
       <Modal
@@ -247,100 +237,101 @@ const Settings = () => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Edit Profile</Text>
+              <Text style={styles.modalTitle}>Editar Perfil</Text>
               <TouchableOpacity onPress={() => setIsEditModalVisible(false)}>
-                <Ionicons name="close" size={28} color="#3D3D5C" />
+                <Ionicons name="close" size={28} color={COLORS.text} />
               </TouchableOpacity>
             </View>
 
-            <ScrollView style={styles.modalBody}>
+            <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false}>
               {editError ? (
                 <View style={styles.errorContainer}>
                   <Text style={styles.errorText}>{editError}</Text>
                 </View>
               ) : null}
 
-              <Text style={styles.sectionLabel}>Personal Information</Text>
+              <Text style={styles.sectionLabel}>Información Personal</Text>
 
-              <Text style={styles.inputLabel}>First Name</Text>
+              <Text style={styles.inputLabel}>Nombre</Text>
               <TextInput
                 style={styles.input}
                 value={firstName}
                 onChangeText={setFirstName}
-                placeholder="Enter first name"
-                placeholderTextColor="#9CA3AF"
+                placeholder="Ingresa tu nombre"
+                placeholderTextColor={COLORS.gray}
               />
 
-              <Text style={styles.inputLabel}>Last Name</Text>
+              <Text style={styles.inputLabel}>Apellido</Text>
               <TextInput
                 style={styles.input}
                 value={lastName}
                 onChangeText={setLastName}
-                placeholder="Enter last name"
-                placeholderTextColor="#9CA3AF"
+                placeholder="Ingresa tu apellido"
+                placeholderTextColor={COLORS.gray}
               />
 
-              <Text style={styles.inputLabel}>Username</Text>
+              <Text style={styles.inputLabel}>Usuario</Text>
               <TextInput
                 style={styles.input}
                 value={username}
                 onChangeText={setUsername}
-                placeholder="Enter username"
-                placeholderTextColor="#9CA3AF"
+                placeholder="Ingresa tu usuario"
+                placeholderTextColor={COLORS.gray}
+                autoCapitalize="none"
               />
 
-              <Text style={styles.inputLabel}>Email</Text>
+              <Text style={styles.inputLabel}>Correo electrónico</Text>
               <TextInput
                 style={styles.input}
                 value={email}
                 onChangeText={setEmail}
-                placeholder="Enter email address"
-                placeholderTextColor="#9CA3AF"
+                placeholder="Ingresa tu correo"
+                placeholderTextColor={COLORS.gray}
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
 
-              <Text style={styles.inputLabel}>Phone Number</Text>
+              <Text style={styles.inputLabel}>Teléfono</Text>
               <TextInput
                 style={styles.input}
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
-                placeholder="Enter phone number"
-                placeholderTextColor="#9CA3AF"
+                placeholder="Ingresa tu teléfono"
+                placeholderTextColor={COLORS.gray}
                 keyboardType="phone-pad"
               />
 
               <Text style={[styles.sectionLabel, styles.passwordSectionLabel]}>
-                Change Password (Optional)
+                Cambiar Contraseña (Opcional)
               </Text>
 
-              <Text style={styles.inputLabel}>Current Password</Text>
+              <Text style={styles.inputLabel}>Contraseña Actual</Text>
               <TextInput
                 style={styles.input}
                 value={currentPassword}
                 onChangeText={setCurrentPassword}
-                placeholder="Enter current password"
-                placeholderTextColor="#9CA3AF"
+                placeholder="Ingresa tu contraseña actual"
+                placeholderTextColor={COLORS.gray}
                 secureTextEntry
               />
 
-              <Text style={styles.inputLabel}>New Password</Text>
+              <Text style={styles.inputLabel}>Nueva Contraseña</Text>
               <TextInput
                 style={styles.input}
                 value={newPassword}
                 onChangeText={setNewPassword}
-                placeholder="Enter new password"
-                placeholderTextColor="#9CA3AF"
+                placeholder="Ingresa tu nueva contraseña"
+                placeholderTextColor={COLORS.gray}
                 secureTextEntry
               />
 
-              <Text style={styles.inputLabel}>Confirm New Password</Text>
+              <Text style={styles.inputLabel}>Confirmar Nueva Contraseña</Text>
               <TextInput
                 style={styles.input}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
-                placeholder="Confirm new password"
-                placeholderTextColor="#9CA3AF"
+                placeholder="Confirma tu nueva contraseña"
+                placeholderTextColor={COLORS.gray}
                 secureTextEntry
               />
 
@@ -350,9 +341,9 @@ const Settings = () => {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <ActivityIndicator color="#FAFAFA" />
+                  <ActivityIndicator color={COLORS.text} />
                 ) : (
-                  <Text style={styles.saveButtonText}>Save Changes</Text>
+                  <Text style={styles.saveButtonText}>Guardar Cambios</Text>
                 )}
               </TouchableOpacity>
 
@@ -360,8 +351,9 @@ const Settings = () => {
                 style={styles.cancelButton}
                 onPress={() => setIsEditModalVisible(false)}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
               </TouchableOpacity>
+              <View style={styles.bottomPadding} />
             </ScrollView>
           </View>
         </View>
@@ -373,10 +365,13 @@ const Settings = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FAFAFA",
+    backgroundColor: COLORS.background,
+  },
+  scrollContent: {
+    paddingBottom: 100, // Safe area for floating bottom bar
   },
   header: {
-    backgroundColor: "#6B4C9A",
+    backgroundColor: COLORS.primary,
     paddingTop: 60,
     paddingBottom: 30,
     alignItems: "center",
@@ -387,45 +382,53 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: "#F5B800",
+    backgroundColor: COLORS.secondary,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 16,
     borderWidth: 4,
-    borderColor: "white",
+    borderColor: COLORS.background,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
   },
   avatarText: {
     fontSize: 36,
     fontWeight: "bold",
-    color: "#3D3D5C",
+    color: COLORS.text,
   },
   userName: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "white",
+    color: COLORS.white,
     marginBottom: 4,
   },
   userUsername: {
     fontSize: 16,
-    color: "#FAFAFA",
+    color: "rgba(255, 255, 255, 0.8)",
     fontWeight: "500",
     marginBottom: 12,
   },
   editButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(250, 250, 250, 0.2)",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    backgroundColor: COLORS.secondary,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 24,
     marginTop: 8,
-    borderWidth: 1,
-    borderColor: "rgba(250, 250, 250, 0.3)",
+    shadowColor: COLORS.secondary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
   },
   editButtonText: {
-    color: "#FAFAFA",
+    color: COLORS.text,
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: "bold",
     marginLeft: 6,
   },
   section: {
@@ -434,68 +437,76 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "600",
-    color: "#1f2937",
-    marginBottom: 12,
+    fontWeight: "700",
+    color: COLORS.text,
+    marginBottom: 16,
   },
   infoCard: {
-    backgroundColor: "white",
-    borderRadius: 16,
+    backgroundColor: COLORS.white,
+    borderRadius: 20,
     padding: 20,
-    shadowColor: "#000",
+    shadowColor: COLORS.text,
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: COLORS.lightGray,
   },
   infoRow: {
     marginBottom: 16,
   },
   infoLabel: {
-    fontSize: 13,
-    color: "#6b7280",
-    fontWeight: "500",
-    marginBottom: 4,
+    fontSize: 12,
+    color: COLORS.gray,
+    fontWeight: "600",
+    marginBottom: 6,
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
   infoValue: {
     fontSize: 16,
-    color: "#1f2937",
+    color: COLORS.text,
     fontWeight: "500",
   },
   verifiedBadge: {
-    backgroundColor: "#d1fae5",
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(90, 140, 111, 0.1)',
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 8,
+    borderRadius: 12,
     alignSelf: "flex-start",
-    marginBottom: 16,
+    marginBottom: 20,
+    gap: 6,
   },
   verifiedText: {
-    color: "#5A8C6F",
-    fontSize: 14,
+    color: COLORS.success,
+    fontSize: 13,
     fontWeight: "600",
   },
   logoutButton: {
-    backgroundColor: "#FF6B6B",
+    backgroundColor: COLORS.accent,
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: "center",
-    shadowColor: "#FF6B6B",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 8,
+    shadowColor: COLORS.accent,
     shadowOffset: {
       width: 0,
       height: 4,
     },
     shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
+    shadowRadius: 8,
+    elevation: 5,
   },
   logoutButtonText: {
-    color: "white",
+    color: COLORS.white,
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -503,115 +514,115 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  placeholderText: {
-    fontSize: 16,
-    color: "#94A3B8",
-  },
-  bottomPadding: {
-    height: 40,
-  },
   // Modal styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(61, 61, 92, 0.7)",
+    backgroundColor: "rgba(61, 61, 92, 0.6)",
     justifyContent: "flex-end",
   },
   modalContent: {
-    backgroundColor: "#FAFAFA",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    backgroundColor: COLORS.background,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
     maxHeight: "90%",
-    paddingTop: 20,
+    paddingTop: 24,
   },
   modalHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingBottom: 16,
+    paddingBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
+    borderBottomColor: COLORS.lightGray,
   },
   modalTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#3D3D5C",
+    color: COLORS.text,
   },
   modalBody: {
     paddingHorizontal: 24,
     paddingTop: 20,
-    paddingBottom: 40,
   },
   sectionLabel: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#6B4C9A",
+    color: COLORS.primary,
     marginBottom: 16,
     marginTop: 8,
   },
   passwordSectionLabel: {
-    marginTop: 24,
+    marginTop: 32,
   },
   inputLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#3D3D5C",
+    color: COLORS.text,
     marginBottom: 8,
-    marginTop: 12,
+    marginTop: 16,
   },
   input: {
-    backgroundColor: "white",
+    backgroundColor: COLORS.white,
     borderWidth: 1,
-    borderColor: "#D1D5DB",
+    borderColor: COLORS.lightGray,
     borderRadius: 12,
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 16,
     fontSize: 16,
-    color: "#3D3D5C",
+    color: COLORS.text,
   },
   errorContainer: {
-    backgroundColor: "#FEE2E2",
+    backgroundColor: 'rgba(255, 107, 107, 0.1)',
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 12,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 107, 107, 0.3)',
+  },
+  errorText: {
+    color: COLORS.accent,
+    fontSize: 14,
+    fontWeight: "500",
+    textAlign: "center",
   },
   saveButton: {
-    backgroundColor: "#6B4C9A",
+    backgroundColor: COLORS.secondary,
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: "center",
-    marginTop: 24,
-    shadowColor: "#6B4C9A",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
+    marginTop: 32,
+    shadowColor: COLORS.secondary,
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
+    shadowRadius: 10,
+    elevation: 6,
   },
   saveButtonDisabled: {
-    backgroundColor: "#9B8BBF",
+    backgroundColor: COLORS.lightGray,
+    shadowOpacity: 0,
+    elevation: 0,
   },
   saveButtonText: {
-    color: "#FAFAFA",
-    fontSize: 16,
+    color: COLORS.text,
+    fontSize: 18,
     fontWeight: "bold",
   },
   cancelButton: {
     backgroundColor: "transparent",
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: "center",
     marginTop: 12,
-    borderWidth: 1,
-    borderColor: "#D1D5DB",
   },
   cancelButtonText: {
-    color: "#3D3D5C",
+    color: COLORS.gray,
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "bold",
   },
+  bottomPadding: {
+    height: 40,
+  }
 });
 
 export default Settings;
